@@ -148,5 +148,4 @@ func efiupdatermain(){
     }
 }
 
-//https://github.com/Dids/clover-builder/releases/download/v2.5k_r5099/Clover_v2.5k_r5099.pkg
 

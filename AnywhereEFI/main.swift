@@ -59,10 +59,19 @@ func forinit() {
         efiupdatermain()
     case 4:
         print("Thanks for using, good bye!")
-        exit(0)
+        forexit()
     default:
         break
     }
+}
+
+//Some work to clean temp files
+func forexit(){
+    let _ = easyfile(type: mytype.dict, operation: myoperation.delete, frompath: tempdir)
+    let _ = easyfile(type: mytype.file, operation: myoperation.delete, frompath: "/tmp/\(bootloader.name).txt")
+    let _ = easyfile(type: mytype.file, operation: myoperation.delete, frompath: bootloader.path)
+    let _ = easyfile(type: mytype.file, operation: myoperation.delete, frompath: "tmp/allmount.txt")
+    exit(0)
 }
 
 //Main function
