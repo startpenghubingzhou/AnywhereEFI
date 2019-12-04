@@ -42,16 +42,27 @@ func forinit() {
 
 //Some work to clean temp files
 func forexit(){
-    let _ = easyfile(type: mytype.dict, operation: myoperation.delete, frompath: tempdir)
-    let _ = easyfile(type: mytype.file, operation: myoperation.delete, frompath: "/tmp/\(bootloader.name).txt")
-    let _ = easyfile(type: mytype.file, operation: myoperation.delete, frompath: bootloader.path)
-    let _ = easyfile(type: mytype.file, operation: myoperation.delete, frompath: "tmp/allmount.txt")
+    if fileman.fileExists(atPath: tempdir){
+        let _ = easyfile(type: mytype.dict, operation: myoperation.delete, frompath: tempdir)
+    }
+    
+    if fileman.fileExists(atPath: "/tmp/\(bootloader.name).txt"){
+        let _ = easyfile(type: mytype.file, operation: myoperation.delete, frompath: "/tmp/\(bootloader.name).txt")
+    }
+    
+    if fileman.fileExists(atPath: bootloader.path){
+        let _ = easyfile(type: mytype.file, operation: myoperation.delete, frompath: bootloader.path)
+    }
+    
+    if fileman.fileExists(atPath: "tmp/allmount.txt"){
+        let _ = easyfile(type: mytype.file, operation: myoperation.delete, frompath: "tmp/allmount.txt")
+    }
+    
     exit(0)
 }
 
 //Main function
 func main(){
-    
     forinit()
 }
 

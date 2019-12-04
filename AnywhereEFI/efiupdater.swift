@@ -13,6 +13,30 @@ let bootfile = "/EFI/BOOT/BOOTX64.efi"
 var efioperate:String = ""
 var bootloader = (name: "", path: "", efifile: "")
 
+//Get bootloader type
+private func getboottype()->(name:String, path:String, efifile: String){
+    var bloadername:String = ""
+    var bloaderpath:String = ""
+    var befifile:String = ""
+    
+    print("Please choose your bootloader")
+    print("1.\(cr)")
+    print("2.\(oc)")
+    print("Enter your choice to continue:")
+    let val0:Int = mustberightnum(Lbound: 1, Ubound: 2)
+    switch val0 {
+    case 1:
+        bloadername = cr
+        bloaderpath = "/tmp/Clover.pkg"
+        befifile = "/EFI/CLOVER/CLOVERX64.efi"
+    default:
+        bloadername = oc
+        bloaderpath = "/tmp/OpenCore.zip"
+        befifile = "/EFI/OC/OpenCore.efi"
+    }
+    return (bloadername, bloaderpath, befifile)
+}
+
 //Append all EFI partitions and find which is the hackintosh bootloader partition
 func EFIArray()-> [String]{
     var realEFIpath:[String] = [""]
@@ -89,7 +113,7 @@ func downloadandupdate(url:String)-> Bool{
     /* Everything for prepareration has been done, now we will start updating. First, we should get the EFI location that we want to update, then we will call "easyfile" API to operate it. */
     let bootloaderEFIlocation:[String] = EFIArray()
     if bootloaderEFIlocation == [""]{
-        print("Cant't get any one EFI partiton which has \(bootloader.name) bootloader! Please try to remount EFI partiton.")
+        print("Can't get any one EFI partiton which has \(bootloader.name) bootloader! Please try to remount EFI partiton.")
         print("Press any key to return...")
         let _ = getkeyboard()
         forinit()
@@ -127,6 +151,7 @@ func downloadandupdate(url:String)-> Bool{
 
 //Main function
 func efiupdatermain(){
+    bootloader = getboottype()
     let array = getlatest()
     print("The latest version of \(bootloader.name) is \(array.verison), would you like to update?(Y/N)")
     let get:String = getkeyboard()
