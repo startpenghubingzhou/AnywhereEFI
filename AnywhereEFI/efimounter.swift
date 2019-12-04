@@ -12,15 +12,38 @@ let fileManager = FileManager.default
 let path:String = "/tmp/efitemp.txt"
 var ismounted:[Bool] = [true]
 
+//Get bootloader type
+private func getboottype()->(name:String, path:String, efifile: String){
+    var bloadername:String = ""
+    var bloaderpath:String = ""
+    var befifile:String = ""
+    
+    print("Please choose your bootloader")
+    print("1.\(cr)")
+    print("2.\(oc)")
+    print("Enter your choice to continue:")
+    let val0:Int = mustberightnum(Lbound: 1, Ubound: 2)
+    switch val0 {
+    case 1:
+        bloadername = cr
+        bloaderpath = "/tmp/Clover.pkg"
+        befifile = "/EFI/CLOVER/CLOVERX64.efi"
+    default:
+        bloadername = oc
+        bloaderpath = "/tmp/OpenCore.zip"
+        befifile = "/EFI/OC/OpenCore.efi"
+    }
+    return (bloadername, bloaderpath, befifile)
+}
 
 //Get EFI information
-func getdiskutil()->String{
+private func getdiskutil()->String{
     let result = shell(["diskutil", "list"])
     return result
 }
 
 //Get full locations of all EFI partitions
-func getlocations()->[String]{
+private func getlocations()->[String]{
     let temp = getdiskutil()
     let efiList:[String]? = temp.components(separatedBy: "\n") //Load information in line one by one
     var partitions:[String]? = []
@@ -54,6 +77,7 @@ func getlocations()->[String]{
 
 //EFI mounter main function
 func efimountermain(){
+    bootloader = getboottype()
     let info:[String] = getlocations()
     let num = info.count
     var ret:[String] = [""]
@@ -125,6 +149,6 @@ func efimountermain(){
         }
     }
     print("Press any key to continue.")
-    getkeyboard()
+    let _ = getkeyboard()
     forinit()
 }

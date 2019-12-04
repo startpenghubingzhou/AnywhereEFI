@@ -11,6 +11,7 @@ import Foundation
 let tempdir:String = "/tmp/efithistemp"
 let bootfile = "/EFI/BOOT/BOOTX64.efi"
 var efioperate:String = ""
+var bootloader = (name: "", path: "", efifile: "")
 
 //Append all EFI partitions and find which is the hackintosh bootloader partition
 func EFIArray()-> [String]{
