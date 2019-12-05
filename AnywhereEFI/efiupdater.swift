@@ -37,30 +37,8 @@ private func getboottype()->(name:String, path:String, efifile: String){
     return (bloadername, bloaderpath, befifile)
 }
 
-//Append all EFI partitions and find which is the hackintosh bootloader partition
-func EFIArray()-> [String]{
-    var realEFIpath:[String] = [""]
-    print(runscript(command: "ls /Volumes > /tmp/allmount.txt", requireroot: false))
-    var file = NSString.init()
-    try! file = NSString(contentsOfFile: "/tmp/allmount.txt", encoding: String.Encoding.utf8.rawValue)
-    let allitem:NSArray? = file.components(separatedBy: "\n")as NSArray
-    for i in allitem! {
-        let path:String = i as! String
-        let epath = "/Volumes/" + path + bootloader.efifile
-        if fileman.fileExists(atPath: epath){
-            if realEFIpath[0] == ""{
-                realEFIpath[0] = "/Volumes/" + path
-            }
-            else{
-                realEFIpath.append("/Volumes/" + path)
-            }
-        }
-    }
-    return realEFIpath
-}
-
 //Get the latest version of Clover and download URL
-func getlatest ()->(URL:String,verison:String){
+private func getlatest ()->(URL:String,verison:String){
     var url = String(describing: String.Encoding.utf8)
     var ver:String = ""
     //Judge bootloader
@@ -89,10 +67,10 @@ func getlatest ()->(URL:String,verison:String){
 }
 
 //Download the latest bootloader and then update the native bootloader
-func downloadandupdate(url:String)-> Bool{
+private func downloadandupdate(url:String)-> Bool{
     print("\nDownloading the latest version of \(bootloader.name)……")
    // let ret = runscript(command:"/usr/bin/curl -L --socks5 127.0.0.1:1081 -# -o \(bootloader.path) \(url)", requireroot: false)
-    let ret = shell(["/usr/bin/curl", "-L", "-o", "\(bootloader.path)",/* "--socks5", "127.0.0.1:1081",*/ "-#", url])
+    let ret = shell(["/usr/bin/curl", "-L", "-o", "\(bootloader.path)", "--socks5", "127.0.0.1:1081", "-#", url])
     if ret != ""{
         print("Download failed, please try later. Press any key to continue")
         let _ = getkeyboard()
@@ -136,17 +114,29 @@ func downloadandupdate(url:String)-> Bool{
     
     //Now it's the time we should update EFI.
     var myresult:[Bool] = Array(repeating: false, count: 4)
+    print("Deleting old \(bootloader.name) files...")
+    
     myresult[0] = easyfile(type: mytype.file, operation: myoperation.delete, frompath: efioperate + bootloader.efifile)
     myresult[1] = easyfile(type: mytype.dict, operation: myoperation.delete, frompath: efioperate + bootfile)
+    
+    print("Copying new \(bootloader.name) files...")
+    
     myresult[2] = easyfile(type: mytype.file, operation: myoperation.copy, frompath: tempdir + bootloader.efifile, topath: efioperate + bootloader.efifile)
     myresult[3] = easyfile(type: mytype.dict, operation: myoperation.copy, frompath: tempdir + bootfile, topath: efioperate + bootfile)
     
-    for i in myresult{
-        if i == false{
-            return false
-        }
+    
+    
+    if myresult[1] == false || myresult[0] == false{
+        print("Deleting old \(bootloader.name) files failed!")
+        return false
     }
-    return true
+    else if myresult[1] == false || myresult[0] == false{
+        print("Copying new \(bootloader.name) files failed!")
+        return false
+    }
+    else{
+        return true
+    }
 }
 
 //Main function
@@ -160,7 +150,7 @@ func efiupdatermain(){
             print("Update failed, press any key to go back.")
         }
         else{
-            print("Your \(bootloader.efifile) bootloader has been updated successfully, press any key to go back.")
+            print("Your \(bootloader.name) bootloader has been updated successfully, press any key to go back.")
         }
         let _ = getkeyboard()
         forinit()

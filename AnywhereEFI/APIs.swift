@@ -166,3 +166,25 @@ public func easyfile(type: mytype, operation: myoperation, frompath: String, top
         return false
     }
 }
+
+//Append all EFI partitions and find which is the hackintosh bootloader partition
+public func EFIArray()-> [String]{
+    var realEFIpath:[String] = [""]
+    print(runscript(command: "ls /Volumes > /tmp/allmount.txt", requireroot: false))
+    var file = NSString.init()
+    try! file = NSString(contentsOfFile: "/tmp/allmount.txt", encoding: String.Encoding.utf8.rawValue)
+    let allitem:NSArray? = file.components(separatedBy: "\n")as NSArray
+    for i in allitem! {
+        let path:String = i as! String
+        let epath = "/Volumes/" + path + bootloader.efifile
+        if fileman.fileExists(atPath: epath){
+            if realEFIpath[0] == ""{
+                realEFIpath[0] = "/Volumes/" + path
+            }
+            else{
+                realEFIpath.append("/Volumes/" + path)
+            }
+        }
+    }
+    return realEFIpath
+}

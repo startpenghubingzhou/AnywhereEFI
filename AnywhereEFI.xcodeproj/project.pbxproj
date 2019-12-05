@@ -11,6 +11,7 @@
 		6781BF96238BF8AB00B07E7D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6781BF95238BF8AB00B07E7D /* main.swift */; };
 		67D52526238E537A006A5DEA /* efimounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D52525238E537A006A5DEA /* efimounter.swift */; };
 		67D52528238E6A10006A5DEA /* efiupdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D52527238E6A10006A5DEA /* efiupdater.swift */; };
+		67D694A32397C79E002ACB7B /* efibackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D694A22397C79E002ACB7B /* efibackup.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +20,7 @@
 		6781BF95238BF8AB00B07E7D /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		67D52525238E537A006A5DEA /* efimounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = efimounter.swift; sourceTree = "<group>"; };
 		67D52527238E6A10006A5DEA /* efiupdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = efiupdater.swift; sourceTree = "<group>"; };
+		67D694A22397C79E002ACB7B /* efibackup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = efibackup.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -45,6 +47,7 @@
 				677F896A2394D1E10075270B /* APIs.swift */,
 				67D52525238E537A006A5DEA /* efimounter.swift */,
 				67D52527238E6A10006A5DEA /* efiupdater.swift */,
+				67D694A22397C79E002ACB7B /* efibackup.swift */,
 			);
 			path = AnywhereEFI;
 			sourceTree = "<group>";
@@ -119,6 +122,7 @@
 				67D52528238E6A10006A5DEA /* efiupdater.swift in Sources */,
 				6781BF96238BF8AB00B07E7D /* main.swift in Sources */,
 				677F896C239503D20075270B /* APIs.swift in Sources */,
+				67D694A32397C79E002ACB7B /* efibackup.swift in Sources */,
 				67D52526238E537A006A5DEA /* efimounter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
