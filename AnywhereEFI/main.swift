@@ -9,8 +9,12 @@ import Foundation
 
 let cr:String = "Clover"
 let oc:String = "OpenCore"
+var bootloader = (name: "", path: "", efifile: "")
+var proxyprotocol:String = ""
+var proxyURL:String = ""
+var args = CommandLine.arguments
 
-//Initialization in terminal
+//Main function, for initialization in terminal
 func forinit() {
     print("AnywhereEFI written by penghubingzhou\n")
     print("====================================================\n")
@@ -27,9 +31,7 @@ func forinit() {
     case 1:
         efimountermain()
     case 2:
-        print("For testing, coming soon! Press any key to return.")
-        let _ = getkeyboard()
-        forinit()
+        efibackupmain()
     case 3:
         efiupdatermain()
     case 4:
@@ -61,9 +63,35 @@ func forexit(){
     exit(0)
 }
 
-//Main function
+//Show usage
+func usage(){
+    print("Usage: AnywhereEFI <-protocol [proxy]> <-url [proxyURL]>")
+    print("<-protocol [proxy]>: Your proxy protocol for curl(Using in EFI Update). [proxy] is your protocol(socks, socks5...)")
+    print("<-url [proxyURL]>: Your proxy URL. [proxyURL] is your URL for proxy(including ports).")
+    forexit()
+}
+
+//Main function, get proxy protocol and URL for curl
 func main(){
-    forinit()
+    switch args.count {
+    case 5:
+        if args[1] != "-protocol" || args[3] != "-url"{
+            print("AnywhereEFI: bad arguments!")
+            usage()
+        }
+        else{
+            proxyprotocol = "--" + args[2]
+            proxyURL = args[4]
+            forinit()
+        }
+        
+    case 1:
+        forinit()
+        
+    default:
+        print("AnywhereEFI: bad arguments!")
+        usage()
+    }
 }
 
 main()

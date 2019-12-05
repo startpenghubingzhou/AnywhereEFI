@@ -15,9 +15,24 @@ AnywhereEFI is a useful command  for EFI management  in Hackintosh. It is overwr
 
 # Usage
 
-You don't need to input any parameters for now, just drag it into your Terminal and then enter.
+ 
+
+```
+AnywhereEFI <-protocol [proxy]> <-url [proxyURL]>
+
+```
+
+`<-protocol [proxy]>:`  **Your proxy protocol for curl**(Using in EFI Update).
+
+ `[proxy]` is your protocol(like socks, socks5...)
+
+`<-url [proxyURL]>:`  **Your proxy URL**. 
+
+`[proxyURL]` is your URL for proxy(including ports).
 
 
+
+For more params, please use `curl --help`
 
 # Credits
 

@@ -12,8 +12,6 @@ let fileManager = FileManager.default
 let path:String = "/tmp/efitemp.txt"
 var ismounted:[Bool] = [true]
 
-
-
 //Get EFI information
 private func getdiskutil()->String{
     let result = shell(["diskutil", "list"])

@@ -11,31 +11,7 @@ import Foundation
 let tempdir:String = "/tmp/efithistemp"
 let bootfile = "/EFI/BOOT/BOOTX64.efi"
 var efioperate:String = ""
-var bootloader = (name: "", path: "", efifile: "")
 
-//Get bootloader type
-private func getboottype()->(name:String, path:String, efifile: String){
-    var bloadername:String = ""
-    var bloaderpath:String = ""
-    var befifile:String = ""
-    
-    print("Please choose your bootloader")
-    print("1.\(cr)")
-    print("2.\(oc)")
-    print("Enter your choice to continue:")
-    let val0:Int = mustberightnum(Lbound: 1, Ubound: 2)
-    switch val0 {
-    case 1:
-        bloadername = cr
-        bloaderpath = "/tmp/Clover.pkg"
-        befifile = "/EFI/CLOVER/CLOVERX64.efi"
-    default:
-        bloadername = oc
-        bloaderpath = "/tmp/OpenCore.zip"
-        befifile = "/EFI/OC/OpenCore.efi"
-    }
-    return (bloadername, bloaderpath, befifile)
-}
 
 //Get the latest version of Clover and download URL
 private func getlatest ()->(URL:String,verison:String){
@@ -52,8 +28,8 @@ private func getlatest ()->(URL:String,verison:String){
     
     print("Getting the latest version of \(bootloader.name)……")
     
-   print(shell(["/usr/bin/curl", "-s", "-o", "/tmp/\(bootloader.name).txt", url]))
-    
+   print(shell(["/usr/bin/curl", "-s", "-o", "/tmp/\(bootloader.name).txt", proxyprotocol, proxyURL, url]))
+
     if bootloader.name == cr {
         url = loadfromfile(filepath: "/tmp/\(bootloader.name).txt", atIndex: 136, from: 33, to: 91)
         ver = String(url[url.index(url.startIndex,offsetBy: 64)..<url.index(url.startIndex,offsetBy: 68)])
@@ -70,9 +46,9 @@ private func getlatest ()->(URL:String,verison:String){
 private func downloadandupdate(url:String)-> Bool{
     print("\nDownloading the latest version of \(bootloader.name)……")
    // let ret = runscript(command:"/usr/bin/curl -L --socks5 127.0.0.1:1081 -# -o \(bootloader.path) \(url)", requireroot: false)
-    let ret = shell(["/usr/bin/curl", "-L", "-o", "\(bootloader.path)", "--socks5", "127.0.0.1:1081", "-#", url])
+    let ret = shell(["/usr/bin/curl", "-L", "-o", "\(bootloader.path)", proxyprotocol, proxyURL,/*"--socks5", "127.0.0.1:1081",*/ "-#", url])
     if ret != ""{
-        print("Download failed, please try later. Press any key to continue")
+        print("Download failed, please try later. if you have set proxy, please check if it was set correctly.\nPress any key to continue...")
         let _ = getkeyboard()
         forinit()
     }
@@ -89,31 +65,12 @@ private func downloadandupdate(url:String)-> Bool{
     }
     
     /* Everything for prepareration has been done, now we will start updating. First, we should get the EFI location that we want to update, then we will call "easyfile" API to operate it. */
-    let bootloaderEFIlocation:[String] = EFIArray()
-    if bootloaderEFIlocation == [""]{
-        print("Can't get any one EFI partiton which has \(bootloader.name) bootloader! Please try to remount EFI partiton.")
-        print("Press any key to return...")
-        let _ = getkeyboard()
-        forinit()
-    }
-    else if bootloaderEFIlocation.count != 1{
-        print("You have \(bootloaderEFIlocation.count) EFI partions with bootloader \(bootloader.name). Please select the one you want to update:" )
-        for i in bootloaderEFIlocation{
-            print(i)
-        }
-        let key = mustberightnum(Lbound: bootloaderEFIlocation.startIndex, Ubound: bootloaderEFIlocation.endIndex)
-        for i in bootloaderEFIlocation.endIndex...bootloaderEFIlocation.endIndex{
-            if i == key{
-                efioperate = bootloaderEFIlocation[i]
-            }
-        }
-    }
-    else{
-        efioperate = bootloaderEFIlocation[0]
-    }
     
-    //Now it's the time we should update EFI.
+    efioperate = chooseefi()
+   
+    //After getting the EFI location that we want to update, now it's the time we should update EFI.
     var myresult:[Bool] = Array(repeating: false, count: 4)
+    
     print("Deleting old \(bootloader.name) files...")
     
     myresult[0] = easyfile(type: mytype.file, operation: myoperation.delete, frompath: efioperate + bootloader.efifile)
@@ -125,7 +82,7 @@ private func downloadandupdate(url:String)-> Bool{
     myresult[3] = easyfile(type: mytype.dict, operation: myoperation.copy, frompath: tempdir + bootfile, topath: efioperate + bootfile)
     
     
-    
+    //Determine if it was updated successfully
     if myresult[1] == false || myresult[0] == false{
         print("Deleting old \(bootloader.name) files failed!")
         return false
@@ -141,7 +98,11 @@ private func downloadandupdate(url:String)-> Bool{
 
 //Main function
 func efiupdatermain(){
-    bootloader = getboottype()
+    //Determine if bootloader was set correctly
+    if bootloader == ("", "", ""){
+        bootloader = getboottype()
+    }
+    
     let array = getlatest()
     print("The latest version of \(bootloader.name) is \(array.verison), would you like to update?(Y/N)")
     let get:String = getkeyboard()
@@ -163,5 +124,3 @@ func efiupdatermain(){
         efiupdatermain()
     }
 }
-
-

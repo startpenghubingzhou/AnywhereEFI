@@ -188,3 +188,58 @@ public func EFIArray()-> [String]{
     }
     return realEFIpath
 }
+
+//Get the EFI location that we want to update
+public func chooseefi()-> String{
+    var ret:String = ""
+    let bootloaderEFIlocation:[String] = EFIArray()
+    
+    if bootloaderEFIlocation == [""]{
+        print("Can't get any one EFI partiton which has \(bootloader.name) bootloader! Please try to remount EFI partiton.")
+        print("Press any key to return...")
+        let _ = getkeyboard()
+        forinit()
+        return  ret
+    }
+    else if bootloaderEFIlocation.count != 1{
+        print("You have \(bootloaderEFIlocation.count) EFI partions with bootloader \(bootloader.name). Please select the one you want to update:" )
+        for i in bootloaderEFIlocation{
+            print(i)
+        }
+        let key = mustberightnum(Lbound: bootloaderEFIlocation.startIndex, Ubound: bootloaderEFIlocation.endIndex)
+        for i in bootloaderEFIlocation.endIndex...bootloaderEFIlocation.endIndex{
+            if i == key{
+                ret = bootloaderEFIlocation[i]
+            }
+        }
+    }
+    else{
+        ret = bootloaderEFIlocation[0]
+    }
+    
+    return  ret
+}
+
+//Get bootloader type
+public func getboottype()->(name:String, path:String, efifile: String){
+    var bloadername:String = ""
+    var bloaderpath:String = ""
+    var befifile:String = ""
+    
+    print("Please choose your bootloader")
+    print("1.\(cr)")
+    print("2.\(oc)")
+    print("Enter your choice to continue:")
+    let val0:Int = mustberightnum(Lbound: 1, Ubound: 2)
+    switch val0 {
+    case 1:
+        bloadername = cr
+        bloaderpath = "/tmp/Clover.pkg"
+        befifile = "/EFI/CLOVER/CLOVERX64.efi"
+    default:
+        bloadername = oc
+        bloaderpath = "/tmp/OpenCore.zip"
+        befifile = "/EFI/OC/OpenCore.efi"
+    }
+    return (bloadername, bloaderpath, befifile)
+}
