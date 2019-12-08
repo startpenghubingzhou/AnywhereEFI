@@ -1,4 +1,7 @@
 # AnywhereEFI
+
+[![Build Status](https://travis-ci.org/yangsenlin/snsdemo.svg?branch=master)](https://travis-ci.org/yangsenlin/snsdemo)
+
 AnywhereEFI is a useful command  for EFI management  in Hackintosh. It is overwritten from the sh version of AnywhereEFI written by me.
 
 
