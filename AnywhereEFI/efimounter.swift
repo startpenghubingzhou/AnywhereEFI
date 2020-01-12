@@ -60,11 +60,12 @@ func efimountermain(){
     //Initial display in terminal
     print("You have \(num) EFI partition(s) in your computer.\n")
     print("====================================================")
-    print("number        location ")
+    print("number        location        diskname ")
     
     //Append all EFI partitons and then display it
     for i in 0..<num {
-        print("\(i+1)             \(info[i]) ")
+        let detailInfo = getDiskInfo(path: info[i])
+        print("\(i+1)             \(info[i])    \(detailInfo["Device / Media Name"] ?? "unknown")")
     }
     
     //Ready to mount EFI partiton
@@ -126,4 +127,25 @@ func efimountermain(){
     print("Press any key to continue.")
     let _ = getkeyboard()
     forinit()
+}
+
+// Get disk info
+// path: dev/disk0
+func getDiskInfo(path: String) -> [String:String] {
+    // dev/disk0s11 ---> dev/disk0
+    let index = path.lastIndex(of: "s")
+    let p = path[..<(index ?? path.endIndex)]
+    
+    let result = shell(["diskutil", "info", String(p)])
+    
+    // "*** \n ** \n **" ----> [["**"], ["*"], .....]
+    let resRows = result.split(separator: "\n")
+    var info: [String: String] = [String:String]()
+    for row in resRows {
+        let res = row.split(separator: ":")
+        let key = String(res.first ?? "").trimmingCharacters(in: CharacterSet.whitespaces)
+        let value = String(res.last ?? "").trimmingCharacters(in: CharacterSet.whitespaces)
+        info[key] = value
+    }
+    return info
 }
