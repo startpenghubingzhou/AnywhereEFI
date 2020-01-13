@@ -133,10 +133,17 @@ func efimountermain(){
 // path: dev/disk0
 func getDiskInfo(path: String) -> [String:String] {
     // dev/disk0s11 ---> dev/disk0
-    let index = path.lastIndex(of: "s")
-    let p = path[..<(index ?? path.endIndex)]
-    
-    let result = shell(["diskutil", "info", String(p)])
+    func findDiskPath() -> String { //Temporary solution
+        let reg = "^/dev/disk[0-9]+"
+        let regex: NSRegularExpression = try! NSRegularExpression(pattern: reg, options: [])
+        let matches = regex.matches(in: path, options: [], range: NSMakeRange(0, path.count))
+        guard matches.count > 0 else { return "" }
+        
+        let p = (path as NSString).substring(with: matches.first!.range)
+        return p
+    }
+
+    let result = shell(["diskutil", "info", findDiskPath()])
     
     // "*** \n ** \n **" ----> [["**"], ["*"], .....]
     let resRows = result.split(separator: "\n")
