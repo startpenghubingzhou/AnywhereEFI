@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/yangsenlin/snsdemo.svg?branch=master)](https://travis-ci.org/yangsenlin/snsdemo)
 
-AnywhereEFI is a useful command  for EFI management  in Hackintosh. It is overwritten from the sh version of AnywhereEFI written by me(the origin version has  been deleted now).
+AnywhereEFI is a useful command  for EFI management  in Hackintosh. It is overwritten from the sh version of AnywhereEFI written by me(the origin version has  been deleted now). This project observe the GPLv2 license.
 
 
 
